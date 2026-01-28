@@ -102,17 +102,62 @@ list<T>::~list(){
 
 template<class T>
 void list<T>::add(T data){
-
+    node<T>* newnode = new node<T>(data, nullptr, nullptr);
+    if(!head){
+        head = newnode;
+        tail = newnode;
+    }
+    else{
+        tail -> setNext(newnode);
+        newnode -> setPrev(tail);
+        tail = newnode;
+    }
 }
 
 template<class T>
 T list<T>::get(T data){
-    return T();
+    node<T>* current = head;
+    while (current){
+        
+        if(current -> getData() == data){
+            return current -> getData();
+        }
+        else{
+            current = current ->getNext();
+        }
+    }
 }
+
 
 template<class T>
 void list<T>::remove(T data){
+    if(!head){
+        cout << "No se encontró ninguna lista.\n";
+        return;
+    }
+    if(head -> getData() == data){
+        node<T>* temp = head;
+        head = head -> getNext();
+        delete temp;
+        return;
+    }
 
+    if(tail -> getData() == data){
+        node<T>* temp = tail;
+        tail = tail -> getPrev();
+        delete temp;
+        return;
+    }
+
+    node<T>* current = head;
+    while (current ->getNext && current ->getNext() -> getData() != data){
+        current = current -> getNext();
+    }
+
+    if (current -> getNext()){
+        node<T>* front;
+        node<T>* back;
+    }
 }
 
 template<class T>
