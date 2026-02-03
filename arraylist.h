@@ -1,200 +1,129 @@
 #pragma once
+#include <iostream>
+#include <stdexcept>
+#include "node.h"
+
 using namespace std;
 
 template<class T>
-class node{
-    private:
-        T data;
-        node<T>* next = nullptr;
-        node<T>* prev = nullptr;
-    public:
-        node(T, node<T>*, node<T>*);
-        ~node();
-        T getData();
-        void setData(T);
-        node<T>* getNext();
-        void setNext (node<T>*);
-        node<T>* getPrev();
-        void setPrev (node<T>*);
-        void print();
-};
+class list {
+private:
+    node<T>* head = nullptr;
+    node<T>* tail = nullptr;
+    node<T>* current_pos = nullptr;
 
-template <class T>
-node<T>::node( T data, node<T>* next, node<T>* prev){
-    this -> data = data;
-    this -> next = next;
-    this -> prev = prev;
-}
-
-template <class T>
-node<T>::~node(){
-    this -> next = nullptr;
-    this -> prev = nullptr;
-}
-
-template <class T>
-T node<T>::getData(){
-    return this -> data;
-}
-
-template <class T>
-void node<T>::setData(T data){
-    this -> data = data;
-}
-
-template <class T>
-node<T>* node<T>::getNext(){
-    return this -> next;
-}
-
-template <class T>
-void node<T>::setNext(node<T>* next){
-    this -> next = next;
-}
-
-template <class T>
-node<T>* node<T>::getPrev(){
-    return this -> prev;
-}
-
-template <class T>
-void node<T>::setPrev(node<T>* prev){
-    this -> prev = prev;
-}
-
-template <class T>
-void node<T>::print(){
-    cout << this -> data << endl;
-}
-
-
-
-template<class T>
-class list{
-    private:
-        node<T>* head = nullptr;
-        node<T>* tail = nullptr;
-    public:
-        list();
-        ~list();
-        void add(T);
-        T get(T);
-        void remove(T);
-        void next();
-        void prior();
-        void print();
-        void last();
-        void first();
-        void size();
+public:
+    list() : head(nullptr), tail(nullptr), current_pos(nullptr) {}
+    ~list();
+    void add(T);
+    T get(T);
+    void remove(T);
+    void print();
+    T first();
+    T last();
+    int size();
+    void reset_cursor() { current_pos = head; }
+    T next();
+    T prior();
 };
 
 template<class T>
-list<T>::list(){
-    this -> head = nullptr;
-    this -> tail = nullptr;
-}
-
-template<class T>
-list<T>::~list(){
-    this -> head = nullptr;
-    this -> tail = nullptr;
-}
-
-template<class T>
-void list<T>::add(T data){
-    node<T>* newnode = new node<T>(data, nullptr, nullptr);
-    if(!head){
-        head = newnode;
-        tail = newnode;
+list<T>::~list() {
+    node<T>* current = head;
+    while (current) {
+        node<T>* next = current->getNext();
+        delete current;
+        current = next;
     }
-    else{
-        tail -> setNext(newnode);
-        newnode -> setPrev(tail);
+}
+
+template<class T>
+void list<T>::add(T data) {
+    node<T>* newnode = new node<T>(data);
+    if (!head) {
+        head = tail = current_pos = newnode;
+    } else {
+        tail->setNext(newnode);
+        newnode->setPrev(tail);
         tail = newnode;
     }
 }
 
 template<class T>
-T list<T>::get(T data){
+T list<T>::get(T data) {
     node<T>* current = head;
-    while (current){
-        
-        if(current -> getData() == data){
-            return current -> getData();
+    while (current) {
+        if (current->getData() == data) return current->getData();
+        current = current->getNext();
+    }
+    throw runtime_error("Elemento no encontrado");
+}
+
+template<class T>
+void list<T>::remove(T data) {
+    node<T>* current = head;
+    while (current) {
+        if (current->getData() == data) {
+            if (current->getPrev()) current->getPrev()->setNext(current->getNext());
+            else head = current->getNext();
+
+            if (current->getNext()) current->getNext()->setPrev(current->getPrev());
+            else tail = current->getPrev();
+
+            if (current == current_pos) current_pos = head;
+            
+            delete current;
+            return;
         }
-        else{
-            current = current ->getNext();
-        }
-    }
-}
-
-
-template<class T>
-void list<T>::remove(T data){
-    if(!head){
-        cout << "No se encontró ninguna lista.\n";
-        return;
-    }
-    if(head -> getData() == data){
-        node<T>* temp = head;
-        head = head -> getNext();
-        delete temp;
-        return;
-    }
-
-    if(tail -> getData() == data){
-        node<T>* temp = tail;
-        tail = tail -> getPrev();
-        delete temp;
-        return;
-    }
-
-    node<T>* current = head;
-    while (current ->getNext && current ->getNext() -> getData() != data){
-        current = current -> getNext();
-    }
-
-    if (current -> getNext()){
-        node<T>* front;
-        node<T>* back;
+        current = current->getNext();
     }
 }
 
 template<class T>
-void list<T>::next(){}
+T list<T>::next() {
+    if (!current_pos) throw runtime_error("Cursor no valido");
+    T data = current_pos->getData();
+    if (current_pos->getNext()) current_pos = current_pos->getNext();
+    return data;
+}
 
 template<class T>
-void list<T>::prior(){}
-
+T list<T>::prior() {
+    if (!current_pos) throw runtime_error("Cursor no valido");
+    T data = current_pos->getData();
+    if (current_pos->getPrev()) current_pos = current_pos->getPrev();
+    return data;
+}
 
 template<class T>
-void list<T>::print(){
-    node<T>* current = head;
-    while (current){
-        current -> print();
-        current = current ->getNext();
+void list<T>::print() {
+    node<T>* curr = head;
+    while (curr) {
+        curr->print();
+        curr = curr->getNext();
     }
+    cout << endl;
 }
 
 template<class T>
-void list<T>::last(){
-    if(!tail) throw runtime_error("La lista esta vacia");
-    return tail -> getData();
+T list<T>::first() {
+    if (!head) throw runtime_error("Lista vacia");
+    return head->getData();
 }
 
 template<class T>
-void list<T>::first(){
-    if(!head) throw runtime_error("La lista esta vacia");
-    return head -> getData();
+T list<T>::last() {
+    if (!tail) throw runtime_error("Lista vacia");
+    return tail->getData();
 }
 
 template<class T>
-void list<T>::size(){
+int list<T>::size() {
     int count = 0;
-    node<T>* current = head;
-    while(current){
+    node<T>* curr = head;
+    while (curr) {
         count++;
-        current = current -> getNext();
+        curr = curr->getNext();
     }
-
+    return count;
 }
