@@ -82,16 +82,16 @@ void list<T>::remove(T data) {
 template<class T>
 T list<T>::next() {
     if (!current_pos) throw runtime_error("Cursor no valido");
-    T data = current_pos->getData();
     if (current_pos->getNext()) current_pos = current_pos->getNext();
+    T data = current_pos->getData();
     return data;
 }
 
 template<class T>
 T list<T>::prior() {
     if (!current_pos) throw runtime_error("Cursor no valido");
-    T data = current_pos->getData();
     if (current_pos->getPrev()) current_pos = current_pos->getPrev();
+    T data = current_pos->getData();
     return data;
 }
 

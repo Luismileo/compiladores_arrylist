@@ -1,4 +1,4 @@
-#include <iostream>
+/* #include <iostream>
 using namespace std;
 #include "arraylist.h"
 #include "node.h"
@@ -87,5 +87,28 @@ int main(){
     cout << "Saliendo. Estado final de la lista:\n";
     l.print();
     cout << "Tamano final: " << l.size() << "\n";
+    return 0;
+}
+ */
+
+#include <iostream>
+#include "AnalizadorLexico.h"
+
+int main() {
+    std::string codigoFuente = 
+        "Program demo\n"
+        "Var x : Integer;\n"
+        "begin\n"
+        "  x := 5;\n"
+        "  if (x > 5) then\n"
+        "     write('mayor');\n"
+        "  else\n"
+        "     write('diferente');\n"
+        "end.";
+
+    AnalizadorLexico analizador;
+    analizador.analizar(codigoFuente);
+    analizador.mostrarResultados();
+
     return 0;
 }
