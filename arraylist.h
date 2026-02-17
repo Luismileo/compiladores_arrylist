@@ -3,8 +3,6 @@
 #include <stdexcept>
 #include "node.h"
 
-using namespace std;
-
 template<class T>
 class list {
 private:
@@ -15,13 +13,16 @@ private:
 public:
     list() : head(nullptr), tail(nullptr), current_pos(nullptr) {}
     ~list();
+
     void add(T);
     T get(T);
     void remove(T);
+
     void print();
     T first();
     T last();
     int size();
+
     void reset_cursor() { current_pos = head; }
     T next();
     T prior();
@@ -56,7 +57,7 @@ T list<T>::get(T data) {
         if (current->getData() == data) return current->getData();
         current = current->getNext();
     }
-    throw runtime_error("Elemento no encontrado");
+    throw std::runtime_error("Elemento no encontrado");
 }
 
 template<class T>
@@ -71,7 +72,7 @@ void list<T>::remove(T data) {
             else tail = current->getPrev();
 
             if (current == current_pos) current_pos = head;
-            
+
             delete current;
             return;
         }
@@ -81,18 +82,16 @@ void list<T>::remove(T data) {
 
 template<class T>
 T list<T>::next() {
-    if (!current_pos) throw runtime_error("Cursor no valido");
+    if (!current_pos) throw std::runtime_error("Cursor no valido");
     if (current_pos->getNext()) current_pos = current_pos->getNext();
-    T data = current_pos->getData();
-    return data;
+    return current_pos->getData();
 }
 
 template<class T>
 T list<T>::prior() {
-    if (!current_pos) throw runtime_error("Cursor no valido");
+    if (!current_pos) throw std::runtime_error("Cursor no valido");
     if (current_pos->getPrev()) current_pos = current_pos->getPrev();
-    T data = current_pos->getData();
-    return data;
+    return current_pos->getData();
 }
 
 template<class T>
@@ -102,18 +101,17 @@ void list<T>::print() {
         curr->print();
         curr = curr->getNext();
     }
-    cout << endl;
 }
 
 template<class T>
 T list<T>::first() {
-    if (!head) throw runtime_error("Lista vacia");
+    if (!head) throw std::runtime_error("Lista vacia");
     return head->getData();
 }
 
 template<class T>
 T list<T>::last() {
-    if (!tail) throw runtime_error("Lista vacia");
+    if (!tail) throw std::runtime_error("Lista vacia");
     return tail->getData();
 }
 
