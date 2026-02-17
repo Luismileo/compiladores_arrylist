@@ -2,6 +2,7 @@
 #define TOKEN_H
 
 #include <string>
+#include <ostream>
 
 enum class TipoToken {
     PALABRA_RESERVADA,
@@ -15,6 +16,8 @@ enum class TipoToken {
 
 struct Token {
     TipoToken tipo;
+    int fila;        
+    int columna;     
     std::string valor;
 
     std::string tipoToString() const {
@@ -29,5 +32,14 @@ struct Token {
         }
     }
 };
+
+inline std::ostream& operator<<(std::ostream& os, const Token& t) {
+    os << "[" << t.tipoToString()
+       << " | " << t.fila
+       << " | " << t.columna
+       << " | " << t.valor
+       << "]";
+    return os;
+}
 
 #endif
